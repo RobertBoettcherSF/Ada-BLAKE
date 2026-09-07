@@ -28,17 +28,17 @@ procedure Tests is
       return Count;
    end Diff_Count;
 
-   Empty_Msg : constant Byte_Array (1 .. 0) := (others => 0);
-   Msg_1     : constant Byte_Array := (1 => 16#61#, 2 => 16#62#, 3 => 16#63#); -- "abc"
-   Msg_1_Alt : constant Byte_Array := (1 => 16#61#, 2 => 16#62#, 3 => 16#64#); -- "abd"
+   Empty_Msg : constant Byte_Array (1 .. 0) := [others => 0];
+   Msg_1     : constant Byte_Array := [1 => 16#61#, 2 => 16#62#, 3 => 16#63#]; -- "abc"
+   Msg_1_Alt : constant Byte_Array := [1 => 16#61#, 2 => 16#62#, 3 => 16#64#]; -- "abd"
    
    -- Multi-block message helpers
-   Long_Msg_256 : Byte_Array (0 .. 100) := (others => 16#FF#);
-   Long_Msg_512 : Byte_Array (0 .. 200) := (others => 16#EE#);
+   Long_Msg_256 : constant Byte_Array (0 .. 100) := [others => 16#FF#];
+   Long_Msg_512 : constant Byte_Array (0 .. 200) := [others => 16#EE#];
 
    -- Padding boundary messages
-   Bound_256    : Byte_Array (0 .. 54) := (others => 16#AA#); -- Exactly 55 bytes
-   Bound_512    : Byte_Array (0 .. 110) := (others => 16#BB#); -- Exactly 111 bytes
+   Bound_256    : constant Byte_Array (0 .. 54) := [others => 16#AA#]; -- Exactly 55 bytes
+   Bound_512    : constant Byte_Array (0 .. 110) := [others => 16#BB#]; -- Exactly 111 bytes
 
    H224_E, H224_M : Digest_224;
    H256_E, H256_M, H256_A, H256_L, H256_B : Digest_256;
