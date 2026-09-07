@@ -1,5 +1,3 @@
-with Interfaces;
-
 package Blake
   with Pure
 is
@@ -15,22 +13,18 @@ is
 
    --  BLAKE-224 Hash (32-bit words, 512-bit blocks, 224-bit output)
    function Hash_224 (Message : Byte_Array) return Digest_224
-     with Post   => Hash_224'Result'Length = 28,
-          Global => null;
+     with Global => null;
 
    --  BLAKE-256 Hash (32-bit words, 512-bit blocks, 256-bit output)
    function Hash_256 (Message : Byte_Array) return Digest_256
-     with Post   => Hash_256'Result'Length = 32,
-          Global => null;
+     with Global => null;
 
    --  BLAKE-384 Hash (64-bit words, 1024-bit blocks, 384-bit output)
    function Hash_384 (Message : Byte_Array) return Digest_384
-     with Post   => Hash_384'Result'Length = 48,
-          Global => null;
+     with Global => null;
 
    --  BLAKE-512 Hash (64-bit words, 1024-bit blocks, 512-bit output)
    function Hash_512 (Message : Byte_Array) return Digest_512
-     with Post   => Hash_512'Result'Length = 64,
-          Global => null;
+     with Global => null;
 
 end Blake;
