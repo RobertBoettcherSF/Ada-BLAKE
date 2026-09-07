@@ -1,3 +1,5 @@
+with Interfaces;
+
 package body Blake is
    use Interfaces;
 
@@ -9,54 +11,54 @@ package body Blake is
 
    --  Message permutation matrix shared by all BLAKE variants
    Sigma : constant Sigma_Table :=
-     ((0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15),
-      (14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3),
-      (11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4),
-      (7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8),
-      (9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13),
-      (2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9),
-      (12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11),
-      (13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10),
-      (6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5),
-      (10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0));
+     [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      [14, 10, 4, 8, 9, 15, 13, 6, 1, 12, 0, 2, 11, 7, 5, 3],
+      [11, 8, 12, 0, 5, 2, 15, 13, 10, 14, 3, 6, 7, 1, 9, 4],
+      [7, 9, 3, 1, 13, 12, 11, 14, 2, 6, 5, 10, 4, 0, 15, 8],
+      [9, 0, 5, 7, 2, 4, 10, 15, 14, 1, 11, 12, 6, 8, 3, 13],
+      [2, 12, 6, 10, 0, 11, 8, 3, 4, 13, 7, 5, 15, 14, 1, 9],
+      [12, 5, 1, 15, 14, 13, 4, 10, 0, 7, 6, 3, 9, 2, 8, 11],
+      [13, 11, 7, 14, 12, 1, 3, 9, 5, 0, 15, 4, 8, 6, 2, 10],
+      [6, 15, 14, 9, 11, 3, 0, 8, 12, 2, 13, 7, 1, 4, 10, 5],
+      [10, 2, 8, 4, 7, 6, 1, 5, 15, 11, 9, 14, 3, 12, 13, 0]];
 
    --  Constants for BLAKE-224 and BLAKE-256 (32-bit)
    C_256 : constant U32_Array (0 .. 15) :=
-     (16#243F6A88#, 16#85A308D3#, 16#13198A2E#, 16#03707344#,
+     [16#243F6A88#, 16#85A308D3#, 16#13198A2E#, 16#03707344#,
       16#A4093822#, 16#299F31D0#, 16#082EFA98#, 16#EC4E6C89#,
       16#452821E6#, 16#38D01377#, 16#BE5466CF#, 16#34E90C6C#,
-      16#C0AC29B7#, 16#C97C50DD#, 16#3F84D5B5#, 16#B5470917#);
+      16#C0AC29B7#, 16#C97C50DD#, 16#3F84D5B5#, 16#B5470917#];
 
    IV_224 : constant U32_Array (0 .. 7) :=
-     (16#C1059ED8#, 16#367CD507#, 16#3070DD17#, 16#F70E5939#,
-      16#FFC00B31#, 16#68581511#, 16#64F98FA7#, 16#BEFA4FA4#);
+     [16#C1059ED8#, 16#367CD507#, 16#3070DD17#, 16#F70E5939#,
+      16#FFC00B31#, 16#68581511#, 16#64F98FA7#, 16#BEFA4FA4#];
 
    IV_256 : constant U32_Array (0 .. 7) :=
-     (16#6A09E667#, 16#BB67AE85#, 16#3C6EF372#, 16#A54FF53A#,
-      16#510E527F#, 16#9B05688C#, 16#1F83D9AB#, 16#5BE0CD19#);
+     [16#6A09E667#, 16#BB67AE85#, 16#3C6EF372#, 16#A54FF53A#,
+      16#510E527F#, 16#9B05688C#, 16#1F83D9AB#, 16#5BE0CD19#];
 
    --  Constants for BLAKE-384 and BLAKE-512 (64-bit)
    C_512 : constant U64_Array (0 .. 15) :=
-     (16#243F6A8885A308D3#, 16#13198A2E03707344#,
+     [16#243F6A8885A308D3#, 16#13198A2E03707344#,
       16#A4093822299F31D0#, 16#082EFA98EC4E6C89#,
       16#452821E638D01377#, 16#BE5466CF34E90C6C#,
       16#C0AC29B7C97C50DD#, 16#3F84D5B5B5470917#,
       16#9216D5D98979FB1B#, 16#D1310BA698DFB5AC#,
       16#2FFD72DBD01ADFB7#, 16#B8E1AFED6A267E96#,
       16#BA7C9045F12C7F99#, 16#24A19947B3916CF7#,
-      16#0801F2E2858EFC16#, 16#636920D871574E69#);
+      16#0801F2E2858EFC16#, 16#636920D871574E69#];
 
    IV_384 : constant U64_Array (0 .. 7) :=
-     (16#CBBB9D5DC1059ED8#, 16#629A292A367CD507#,
+     [16#CBBB9D5DC1059ED8#, 16#629A292A367CD507#,
       16#9159015A3070DD17#, 16#152FECD8F70E5939#,
       16#67332667FFC00B31#, 16#8EB44A8768581511#,
-      16#DB0C2E0D64F98FA7#, 16#47B5481DBEFA4FA4#);
+      16#DB0C2E0D64F98FA7#, 16#47B5481DBEFA4FA4#];
 
    IV_512 : constant U64_Array (0 .. 7) :=
-     (16#6A09E667F3BCC908#, 16#BB67AE8584CAA73B#,
+     [16#6A09E667F3BCC908#, 16#BB67AE8584CAA73B#,
       16#3C6EF372FE94F82B#, 16#A54FF53A5F1D36F1#,
       16#510E527FADE682D1#, 16#9B05688C2B3E6C1F#,
-      16#1F83D9ABFB41BD6B#, 16#5BE0CD19137E2179#);
+      16#1F83D9ABFB41BD6B#, 16#5BE0CD19137E2179#];
 
    -----------------------------------------------------------------------------
    --  Compression and Hashing for 32-bit variants (BLAKE-224, BLAKE-256)
@@ -67,7 +69,7 @@ package body Blake is
       --  Padding requires: 1 bit '1', zeros to reach (L+K)*8 = 448 mod 512,
       --  followed by a 64-bit length. This perfectly translates to bytes:
       K : constant Natural := 64 - ((L + 8) mod 64);
-      Padded : Byte_Array (0 .. L + K + 8 - 1) := (others => 0);
+      Padded : Byte_Array (0 .. L + K + 8 - 1) := [others => 0];
       Total_Bits : constant Interfaces.Unsigned_64 :=
         Interfaces.Unsigned_64 (L) * 8;
    begin
@@ -206,7 +208,7 @@ package body Blake is
       --  Padding: 1 bit '1', zeros to reach (L+K)*8 = 896 mod 1024,
       --  followed by a 128-bit length.
       K : constant Natural := 128 - ((L + 16) mod 128);
-      Padded : Byte_Array (0 .. L + K + 16 - 1) := (others => 0);
+      Padded : Byte_Array (0 .. L + K + 16 - 1) := [others => 0];
       Total_Bits : constant Interfaces.Unsigned_64 :=
         Interfaces.Unsigned_64 (L) * 8;
    begin
